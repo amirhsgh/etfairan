@@ -1,0 +1,159 @@
+datasource db {
+  url      = env("DATABASE_URL")
+  provider = "postgresql"
+}
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 Int      @id @default(autoincrement())
+  name               String   @db.VarChar(255)
+  full_name          String   @db.VarChar(255)
+  email              String   @unique
+  city               City[]
+  
+  phone              String   @db.VarChar(20)
+
+  password           String   @db.VarChar(255)
+
+  
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  
+  role               Role     @default(USER)
+
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Province {
+  id      Int     @id @default(autoincrement())
+  name    String  @db.VarChar(255)
+  city    City[]
+}
+
+model City {
+  id    Int   @id @default(autoincrement())
+  name  String  @db.VarChar(255)
+  province  Province  @relation(fields: [provinceId], references: [id])
+  provinceId  Int
+  user    User    @relation(fields: [userId], references: [id])
+  userId  Int
+  employee  Employee  @relation(fields: [employeeId], references: [id])
+  employeeId  Int
+}
+
+model Employee {
+  id    Int     @id @default(autoincrement())
+  user_responsible  String  @db.VarChar(100)
+  card_unit Card  @default(Rural_union)
+  request_date  DateTime  @default(now())
+  validate_date DateTime  @default(now())
+
+  name  String  @db.VarChar(100)
+  full_name   String  @db.VarChar(100)
+  father_name   String  @db.VarChar(100)
+  birthdate   DateTime  @default(now())
+  place_issue   String? @db.VarChar(100)
+  number_id   String? @db.VarChar(20)
+  national_code String  @db.VarChar(20)
+  degree_education  String?
+  major   String?
+  sex   Sex
+
+  city  City[]
+  section String?
+  village String?
+  street  String?
+  alley   String?
+  plaque  String?
+  postal_code String?
+  phone   String?
+
+  year_start  String?
+  work_place  WorkPlace
+  activity_status   ActivityStatus
+  annual_production_capacity  String? //(square meters)//
+  technical_qualification   TechnicalQualification
+  membership_number String?
+  activity_field    ActivityField
+  province_activity   String  @db.VarChar(50)
+  city_activity   String  @db.VarChar(50)
+  section_activity String?
+  village_activity String?
+  street_activity  String?
+  alley_activity   String?
+  plaque_activity  String?
+  postal_code_activity String?
+  phone_activity   String
+  mobile_activity  String?
+
+  is_insurance    Boolean @default(false)
+  type_insurance_covered  TypeInsurance  
+  is_relevant_training_course Boolean @default(false)
+  time_course TimeCourse
+  time  String?
+  time_of_start String?
+  name_of_teacher String?
+  place_course  String?
+  
+}
+
+enum TimeCourse {
+  day
+  hour
+}
+
+enum TypeInsurance {
+  tamin_egtemaie
+  khadamat_darmani
+}
+
+enum ActivityField {
+  Inspection  //بازرس فنی
+  decentralized_production   //تولید غیرمتمرکز خانگی
+  chele_dwn // چله دوان
+  rfogar
+  rangrez
+  tarah
+  kargah_rangrezi
+  kargah_ghalibafi
+  mogtamae_bozorg_ghalibafi
+}
+
+
+enum TechnicalQualification {
+  union_technical_commission  //کمسیون فنی اتحادیه//
+  professional_technical_organization //سازمان فنی حرفه ای//
+}
+
+enum ActivityStatus {
+  main_job
+  second_job
+  artistic_activity
+}
+
+enum WorkPlace {
+  Rural_union //تعاونی روستایی//
+  Union_carpet  //تعاونی های فرش//
+  Urban_cooperative_union //تعاونی شهری//
+  Union_weavers //صنف بافندگان//
+  decentralized_complex //مجتمع های غیرمتمرکز//
+}
+
+enum Sex {
+  FEMALE
+  MALE
+}
+
+enum Card {
+ Rural_union
+ Union_carpet
+ Union_weavers 
+}

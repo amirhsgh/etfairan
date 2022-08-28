@@ -1,0 +1,7 @@
+.env
+*/.env
+.eslintrc.json
+nodemon.json
+package-lock.json
+node_modules
+migrations
